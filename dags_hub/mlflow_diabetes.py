@@ -1,19 +1,8 @@
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-
-
 from sklearn.model_selection import train_test_split
-
-from sklearn.ensemble import RandomForestClassifier
-
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import confusion_matrix,classification_report,accuracy_score
-from sklearn.model_selection import GridSearchCV
-import pickle
 from sklearn.metrics import classification_report
+import pickle
 
 data = './diabetes.csv'
 df = pd.read_csv(data)
@@ -38,8 +27,8 @@ fill = SimpleImputer(missing_values = 0 , strategy ="mean")#impute with mean all
 #fill = Imputer(missing_values = 0 , strategy ="mean", axis=0)
 
 X_train = fill.fit_transform(X_train)
-X_test = fill.fit_transform(X_test)
-
+X_train = fill.fit_transform(X_train)
+X_test = fill.transform(X_test)
 
 
 # Define the model hyperparameters
@@ -61,7 +50,7 @@ report = classification_report(y_test, y_pred)
 print(report)
 
 report_dict = classification_report(y_test, y_pred, output_dict=True)
-report_dict
+print(report_dict)
 
 
 import dagshub
@@ -74,6 +63,7 @@ mlflow.set_experiment("LR experiments 13_07")
 #mlflow.set_tracking_uri(uri="http://127.0.0.1:5000/")
 
 with mlflow.start_run():
+    mlflow.set_tag("author", "AJ")  # Replace with your actual name
     mlflow.log_params(params)
     mlflow.log_metrics({
         'accuracy': report_dict['accuracy'],
@@ -85,4 +75,4 @@ with mlflow.start_run():
     filename = 'logistic_regression_model.pkl'
     pickle.dump(lr, open(filename, 'wb'))
     # Log the model file as an artifact
-    mlflow.log_artifact(filename, "Logistic Regression")
+    mlflow.log_artifact(filename, "logistic_regression")
