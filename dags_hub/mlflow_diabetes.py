@@ -70,7 +70,7 @@ dagshub.init(repo_owner='edurekajuly24gcp', repo_name='dagshub-demo', mlflow=Tru
 
 import mlflow
 
-mlflow.set_experiment("LRexperimentdiabets1")
+mlflow.set_experiment("LR experiments 13_07")
 #mlflow.set_tracking_uri(uri="http://127.0.0.1:5000/")
 
 with mlflow.start_run():
@@ -81,4 +81,8 @@ with mlflow.start_run():
         'recall_class_1': report_dict['1']['recall'],
         'f1_score_macro': report_dict['macro avg']['f1-score']
     })
-    mlflow.sklearn.log_model(lr, "Logistic Regression") 
+    # Save the model to a file
+    filename = 'logistic_regression_model.pkl'
+    pickle.dump(lr, open(filename, 'wb'))
+    # Log the model file as an artifact
+    mlflow.log_artifact(filename, "Logistic Regression")
